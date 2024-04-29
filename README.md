@@ -1,24 +1,33 @@
 # Protecting Your REST API
 
 ## Stateful VS Stateless
-- **Stateful** is type of authentication process that relies on maintaining a "state" or session throughout a user's interaction with a system or application.
-In stateful authentication, the server keeps track of the user's identity and authentication status as they navigate through different parts of the system or perform various actions. **E.g. : Session**
 
-- **Stateless** is type of authentication process in which each request from a client to a server must contain all the information needed to understand and verify the user's identity and access rights. 
-In other words, the client is responsible for storing all the information and sending it to the server. **E.g. : JWT**
+- **Stateful** adalah tipe authentication process yang menyimpan data user dan keep track data user yang sedang login di server. **E.g. : Session**
+
+
+- **Stateless** adalah tipe authentication prosess yang setiap request client ke server harus mencantumkan informasi2 yang dibutuhkan untuk menverifikasi user tersebut, sehingga maksudnya adalah client yang bertanggung jawab untuk menyimpan semua informasi user yang sedang login dan kirim ke server (server tidak menyimpan infonya)**E.g. : JWT**
 
 ## Authentication VS Authorization
-- **Authentication** is the process of verifying the identity of an individual, system, or entity to ensure that they are who they claim to be. Authentication typically involves the presentation of credentials, such as a username and password, which then checks the provided information against stored records to grant or deny access.
+- **Authentication** adalah proses identifikasi user siapa yang sedang login
 
-- **Authorization** is the process of determining what actions or operations an authenticated user, system, or entity is allowed to perform within a system, application, or resource.
-User or entity is verified, and it involves granting or denying permissions and access rights based on the user's role, privileges, or the policies in place.
-E.g. William may have privilege to read and delete, but Agus is only allowed to read the data
+- **Authorization** is proses perlindungan dengan cara membatasi hak user tertentu yang sedang login, contohnya pembatasan user biasa sehingga tidak bisa melakukan delete, namun user admin bisa melakukan delete
 
+## Register Process
+- Proses register hanyalah membuat user baru, tetapi ada hal yang perlu diperhatikan yaitu password, password user baru harus kita lindungi agar tidak mudah di hack. Kita menggunakan bantuan package yaitu **bcryptjs**(https://www.npmjs.com/package/bcryptjs)
+- Bcryptjs digunakan pada saat pembuatan user baru, alias sebelum data user baru masuk ke database, jadi kita bisa memanfaatkan hooks sequelize yaitu **beforeCreate** dan melakukan hash password
+- Sama halnya seperti membuat user baru, proses seeding juga perlu melakukan hash terhadap password user yang akan di seeding
 
 ## Login Process
-- Saat login, harus menyimpan hal-hal yang penting agar nanti bisa di identifikasi siapa user yang sedang login 
-- JWT disini tugasnya untuk menggantikan session (soalnya session dianggap kurang aman, dan di refresh jg langsung hilang)
-- jadi pada saat login , sekarang kita bisa membuat payload (data-data yang akan disimpan) yang berisi contohnya id yang lagi login, rolenya, dan usernamenya 
-- Tidak seperti session , data2 yang akan disimpen itu ibaratnya di encrypt dulu (supaya lebih aman) dan dijadikan acesss token
+- Proses login diawali dengan menerima email/username dan password yang diberi oleh user
+- Karena login tidak membuat data baru, jadi sequelize validation tidak ketrigger, sehingga kita wajib membuat validasi manual untuk mengechek apakah data email & password yg dimasukkan valid atau tidak
+- Setelah data valid, kita mencari user di database bedasarkan email yang di input, lakukan validasi manual juga untuk mengecek apakah ada usernya atau tidak
+- Setelah itu kita mencocokan (compare) password yang diinput user dan yang ada didatabase(sudah terencrypt) menggunakan function **bcryptjs** compareSync , jika salah kita juga bikin validasi manual
+- lalu, kita harus menyimpan hal-hal yang penting agar nanti bisa di identifikasi siapa user yang sedang login. **jsonwebtoken**(https://www.npmjs.com/package/jsonwebtoken) disini tugasnya untuk menggantikan session (soalnya session dianggap kurang aman, dan di refresh jg langsung hilang)
+- jadi pada saat login , sekarang kita bisa membuat payload (data-data yang akan disimpan) yang berisi contohnya id yang lagi login, rolenya, dan username/email 
+- Tidak seperti session , data2 yang akan disimpen itu ibaratnya di encode dulu (supaya lebih aman) dan dijadikan acesss token
 - Karena kita sekarang udah gak server side rendering, udah jadi REST API, kita kirim access tokennya di res.statusnya
 
+## DOTENV
+[Dokumentasi DOTENV](https://www.npmjs.com/package/dotenv)
+
+Dikarenakan pada saat kita menggunakan jwt, mereka membutuhkan **secret key** yang merupakan variabel buatan kita sendiri yang ditujukan hanya kita yang mengetahui variabel tersebut. Maka dari itu kita menggunakan **DOTENV**
