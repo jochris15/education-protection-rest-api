@@ -1,9 +1,9 @@
-const { Game, Event } = require('../models')
+const { Game, Event, User } = require('../models')
 class Controller {
     static async read(req, res) {
         try {
             const events = await Event.findAll({
-                include: Game
+                include: [Game, User]
             })
 
             res.status(200).json({
