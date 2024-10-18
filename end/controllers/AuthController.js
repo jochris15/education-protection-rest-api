@@ -43,7 +43,7 @@ class AuthController {
         try {
             const { email, password } = req.body
 
-            if (!email || !password) throw { name: "InvalidLogin" }
+            if (!email || !password) throw { name: "BadRequest" }
 
             // proses nyari user bedasarkan email
             const user = await User.findOne({
@@ -71,9 +71,9 @@ class AuthController {
             let message = 'Internal server error'
             let status = 500
 
-            if (err.name == 'InvalidLogin') {
+            if (err.name == 'BadRequest') {
                 message = 'Please input email or password'
-                status = 401
+                status = 400
             }
 
             if (err.name == 'LoginError') {
