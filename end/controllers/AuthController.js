@@ -9,6 +9,10 @@ class AuthController {
             console.log(req.body.email);
             const user = await User.create({ email, password, role })
 
+            delete user.dataValues.password
+            delete user.dataValues.createdAt
+            delete user.dataValues.updatedAt
+
             res.status(201).json({
                 message: "Success create new user",
                 user
