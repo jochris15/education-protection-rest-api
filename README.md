@@ -10,7 +10,7 @@
   
 ## 2 Way to authenticate your REST API
 - **Stateful** adalah tipe authentication process yang menyimpan data user dan keep track data user yang sedang login di server. **E.g. : Session**
-- **Stateless** adalah tipe authentication prosess yang setiap request client ke server harus mencantumkan informasi2 yang dibutuhkan untuk menverifikasi user tersebut, sehingga maksudnya adalah client yang bertanggung jawab untuk menyimpan semua informasi user yang sedang login dan kirim ke server (server tidak menyimpan infonya)**E.g. : JWT**
+- **Stateless** adalah tipe authentication prosess yang setiap request client ke server harus mencantumkan informasi2 yang dibutuhkan untuk menverifikasi user tersebut, sehingga maksudnya adalah client yang bertanggung jawab untuk menyimpan semua informasi user yang sedang login dan kirim ke server (server tidak menyimpan infonya). **E.g. : JWT**
 
 ## Register Process
 - Proses register hanyalah membuat user baru, tetapi ada hal yang perlu diperhatikan yaitu password, password user baru harus kita lindungi agar tidak mudah di hack. Kita menggunakan bantuan package yaitu **bcryptjs**(https://www.npmjs.com/package/bcryptjs)
